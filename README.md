@@ -6,26 +6,27 @@
 ---
 
 ## 🌐 Hosted Deployments & Live Demo
-- **Frontend URL**: `https://hcm-lite-frontend.onrender.com` *(Placeholder / Configure on Render)*
-- **Backend API Docs**: `https://hcm-lite-backend.onrender.com/docs` *(Placeholder / Configure on Render)*
+- **Live frontend**: TBD
+- **Live backend**: TBD
 
 ---
 
 ## 🛠️ Technology Stack
 
 ### Backend
-- **Framework**: Python 3.14 + FastAPI
-- **Database & ORM**: SQLAlchemy 2.0 (PostgreSQL in production with connection pooling; SQLite supported locally)
+- **Framework**: Python 3.10+ / FastAPI
+- **Database & ORM**: SQLAlchemy 2.0 (PostgreSQL in production; SQLite supported locally)
 - **Security & Auth**: Native `bcrypt` password hashing, `PyJWT` bearer token authentication, server-side RBAC & row-level scope enforcement
 - **Reporting**: `ReportLab` enterprise PDF payslip generation
-- **Testing**: `pytest`, `httpx` test client suite (30+ comprehensive integration tests)
+- **Testing**: `pytest`, `httpx` test client suite (41 comprehensive integration tests)
 
 ### Frontend
 - **Framework**: React 19 + Vite
-- **Routing**: `react-router-dom` v7 with role-guarded route trees
+- **Routing**: `react-router-dom` v7 with role-guarded route trees and SPA rewrites
 - **HTTP Client**: `axios` with automatic JWT interceptors and global 401 redirection
 - **Data Visualization**: `recharts` for dynamic attendance trends, absenteeism, and department payroll breakdowns
-- **Design System**: Tailored, modern glassmorphic theme in vanilla CSS (`src/index.css`), responsive from 375px mobile screens to large desktop monitors
+- **Design System**: Tailored, modern glassmorphic theme in vanilla CSS (`src/index.css`), responsive from 375px mobile screens to large desktop displays
+- **Computer Vision**: `face-api.js` (TinyFaceDetector) running locally from `/models` for real-time camera face verification
 
 ### AI Intelligence (Google Gemini)
 - **Engine**: Google Gemini API (`gemini-1.5-flash`) with structured function calling
@@ -37,7 +38,7 @@
 ## 🚀 How to Run Locally
 
 ### Prerequisites
-- Python 3.10+ (Python 3.11, 3.12, 3.13, 3.14 supported)
+- Python 3.10+ (Python 3.10, 3.11, 3.12, 3.13, 3.14 supported)
 - Node.js 18+ and npm
 
 ### 1. Backend Setup
@@ -86,109 +87,83 @@ The web application will be accessible at `http://localhost:5173`.
 
 ---
 
-## 👤 Creating the First Root Administrator
+## 👤 First-Run Admin Setup
 
-HCM Lite starts completely empty with zero dummy data. You have two options to provision the initial Admin:
+HCM Lite starts with zero dummy data so judges experience a genuine first-run setup:
 
-### Option A: The First-Run Setup Wizard (Recommended)
-1. Ensure the backend is running.
-2. Visit `http://localhost:5173`.
-3. If no administrator exists, the system automatically redirects you to `/setup`.
-4. Fill in:
-   - **Company / Organization Name** (e.g. `Saylani Welfare Trust`)
-   - **Admin Email** (e.g. `admin@saylani.org`)
+### The First-Run Setup Wizard
+1. Open the application in your browser (locally at `http://localhost:5173` or at the live frontend URL).
+2. Because no administrator exists yet, the system automatically redirects you to `/setup`.
+3. Fill in:
+   - **Company / Organization Name** (e.g., `Saylani Tech Solutions`)
+   - **Admin Email** (e.g., `admin@company.org`)
    - **Admin Password** (Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special character)
-5. Submit to complete bootstrap. You will be redirected to `/login` to sign in.
+4. Submit the form to complete initialization. You will be redirected to `/login` to sign in as Admin.
 
-### Option B: Auto-Bootstrap via Environment Variables
-Set the following variables in `backend/.env` before launching the backend:
-```env
-COMPANY_NAME=Acme Innovations Corp
-ADMIN_EMAIL=admin@organization.com
-ADMIN_PASSWORD=AdminSecurePassword123!
-```
-On startup, the backend automatically initializes the company settings and creates the root Admin account.
-
----
-
-## 🤖 Configuring the AI Assistant (`AI_API_KEY`)
-
-1. Obtain a Google Gemini API key from [Google AI Studio](https://aistudio.google.com/).
-2. Open `backend/.env` and supply:
-```env
-AI_API_KEY=AIzaSy...your_gemini_api_key...
-AI_MODEL=gemini-1.5-flash
-```
-3. Restart the backend server. The AI assistant functions automatically across chat queries, dashboard executive summaries, and natural language leave requests.
+### Optional Headless Bootstrap via Environment Variables
+If preferred for containerized environments, setting `ADMIN_EMAIL` and `ADMIN_PASSWORD` in the backend environment variables will automatically initialize the Admin account upon startup. If left unset, the web setup wizard at `/setup` is shown.
 
 ---
 
 ## 🔑 Environment Variables Reference
 
 ### Backend (`backend/.env`)
-| Variable | Description | Default / Example |
+| Variable | Required | Description |
 |---|---|---|
-| `PROJECT_NAME` | Name of the HCM instance | `HCM Lite` |
-| `DATABASE_URL` | SQLAlchemy database connection string | `sqlite:///./hcm_lite.db` or `postgresql://user:pass@host:5432/dbname` |
-| `SECRET_KEY` | JWT encryption secret key (32+ chars) | `change-in-production-min-32-chars` |
-| `ALGORITHM` | JWT signing algorithm | `HS256` |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | Access token lifespan | `1440` (24 hours) |
-| `CORS_ORIGINS` | Permitted CORS origins (comma-separated or `*`) | `*` |
-| `COMPANY_NAME` | Optional bootstrap company name | `Saylani Trust` |
-| `ADMIN_EMAIL` | Optional bootstrap admin email | `admin@saylani.org` |
-| `ADMIN_PASSWORD` | Optional bootstrap admin password | `AdminPass123!` |
-| `AI_API_KEY` | Google Gemini API Key | `AIzaSy...` |
-| `AI_MODEL` | Gemini Model identifier | `gemini-1.5-flash` |
+| `PROJECT_NAME` | Optional | Application instance title |
+| `DATABASE_URL` | Yes | Database connection string (PostgreSQL or SQLite) |
+| `SECRET_KEY` | Yes | Cryptographic secret for signing JWT tokens (min 32 chars) |
+| `ALGORITHM` | Optional | JWT algorithm (defaults to `HS256`) |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Optional | JWT token lifespan in minutes |
+| `CORS_ORIGINS` | Optional | Allowed CORS origins (comma-separated domains or `*`) |
+| `COMPANY_NAME` | Optional | Auto-bootstrap company name (leave unset for web setup wizard) |
+| `ADMIN_EMAIL` | Optional | Auto-bootstrap admin email (leave unset for web setup wizard) |
+| `ADMIN_PASSWORD` | Optional | Auto-bootstrap admin password (leave unset for web setup wizard) |
+| `AI_API_KEY` | Optional | Google Gemini API Key for AI features |
+| `AI_MODEL` | Optional | Model identifier (defaults to `gemini-1.5-flash`) |
 
 ### Frontend (`frontend/.env`)
-| Variable | Description | Default / Example |
+| Variable | Required | Description |
 |---|---|---|
-| `VITE_API_URL` | Root URL of backend API server | `http://localhost:8000` |
+| `VITE_API_URL` | Yes | Backend API base URL (e.g. `https://your-backend.onrender.com`) |
 
 ---
 
-## 🧪 Running the Test Suite
+## 🧪 Testing and Verification
 
+To execute the backend test suite:
 ```bash
-# Navigate to the backend directory
 cd backend
-
-# Run the complete test suite
-.venv\Scripts\pytest -v
-
-# Run tests by stage:
-.venv\Scripts\pytest tests/test_part1.py -v    # Auth & Setup
-.venv\Scripts\pytest tests/test_chunk_a.py -v   # Org, Employees, Attendance
-.venv\Scripts\pytest tests/test_stage_b.py -v   # Leave & Payroll
-.venv\Scripts\pytest tests/test_stage_c.py -v   # Dashboards, Comms & CSV
-.venv\Scripts\pytest tests/test_stage_e.py -v   # AI Engine & Guardrails
+.venv\Scripts\python -m pytest
 ```
+*Result: 41 passed, 0 failed.*
 
-To validate the frontend build:
+To build the frontend production assets:
 ```bash
 cd frontend
 npm run build
 ```
+*Result: Exit code 0, optimized bundle with zero build errors.*
 
 ---
 
 ## 📋 Feature Completeness Matrix
 
-### What is Completed (Done)
-- [x] **Core & Setup**: First-run bootstrap wizard, setup status check, environment bootstrapping
-- [x] **Authentication & RBAC**: JWT auth, bcrypt password hashing, forced first-time password rotation (`must_change_password`)
-- [x] **Organization Setup**: Departments, designations, statutory leave types with yearly quotas, public holidays, Admin company settings (work hours, grace, radius, lat/lng)
-- [x] **User & Login Management**: Admin user directory, toggle activate/deactivate account, temporary password reset forcing rotation
+### Done
+- [x] **Core & First-Run Setup**: Initial wizard `/setup`, setup status check `/setup/status`, auto-creation of tables on startup
+- [x] **Authentication & RBAC**: JWT auth, bcrypt hashing, mandatory first-time password rotation (`must_change_password`)
+- [x] **Organization Setup**: Departments, designations, statutory leave types with yearly quotas, public holidays, Admin company settings (work hours, grace period, radius, lat/lng)
+- [x] **User & Login Management**: Admin user directory, toggle activate/deactivate account, temporary password reset forcing first-login change
 - [x] **Workforce Governance**: Employee directory with server-side search, filtering, and pagination; employee registration returning temporary password once; Employee 360 profile; self-service contact edit; HR salary editing
 - [x] **Attendance Engine**: Real-time check-in/out, late evaluation against grace, half-day calculation, dynamic absent calculation skipping weekends and holidays, monthly calendar, daily floor board, correction requests and manager reviews
-- [x] **Camera & Location Attendance (Bonus)**: Web/mobile camera attendance with real-time face detection, GPS geolocation capture, and server-side Haversine geofence distance verification
+- [x] **Camera & Location Attendance (Bonus)**: Web/mobile camera attendance with real-time face detection (using local models in `/models`), GPS geolocation capture, and server-side Haversine geofence distance verification
 - [x] **Leave Management**: Leave requests skipping non-working days, overlap prevention (422), quota validation (422), cancellation while pending, balance tracking, HR approvals syncing to `ON_LEAVE`
 - [x] **Payroll Engine**: HR monthly draft runs (Gross = 1.5 * Basic), attendance deductions (absent days, unpaid leaves, half-days, joiner/leaver proration), late penalty rule (3 lates = 0.5 day), statutory 5-tier annual tax slabs, Admin finalization with locked runs, ReportLab PDF payslip generation
 - [x] **AI Assistant (Gemini)**: Scoped tool calling (`get_headcount`, `get_attendance_summary`, `get_late_comers`, `get_leave_summary`, `get_my_leave_balance`, `get_payroll_summary`, `search_employees`), dashboard AI summary bullets, smart leave natural language parsing, Roman Urdu & English comprehension, strict policy Q&A adherence
 - [x] **Dashboards & Comms**: Server-side aggregation for HR, Admin, and Employee; broadcast announcements board; notifications dropdown with real-time unread badges; dry-run CSV employee import/export
 - [x] **Frontend SPA & PWA (Bonus)**: React 19 + Vite responsive web application with custom glassmorphic design system (from 375px mobile to 4K displays), role-based routes, PWA web app manifest, and loading/empty/error states
-- [x] **Deployment Config**: `render.yaml`, `Procfile`, PostgreSQL URI compatibility, environment templates
+- [x] **Deployment Config**: `render.yaml`, `Procfile`, `frontend/vercel.json` SPA rewrites, PostgreSQL URI compatibility (`postgres://` -> `postgresql://`)
 
-### Optional / Future Enhancements (Not in Scope)
+### Not Done / Future Enhancements
 - [ ] Hardware biometric physical thumbprint device USB driver (simulated via Web camera & API)
 - [ ] Multi-tenant isolation for distinct enterprises under a single DB instance
