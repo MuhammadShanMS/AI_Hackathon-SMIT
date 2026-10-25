@@ -1,0 +1,18 @@
+{
+  "short_name": "HCM Lite",
+  "name": "HCM Lite - AI Human Capital Management",
+  "description": "AI-assisted Human Capital Management for Admin, HR and Employees",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0b0f19",
+  "theme_color": "#4f46e5",
+  "display": "standalone",
+  "orientation": "portrait"
+}

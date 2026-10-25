@@ -1,0 +1,28 @@
+# Environment variables
+.env
+*.env.local
+!*.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+env/
+venv/
+*.db
+*.sqlite3
+
+# Node / Frontend
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# System / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+git_tool/

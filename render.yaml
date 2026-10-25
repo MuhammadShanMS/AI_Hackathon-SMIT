@@ -1,0 +1,42 @@
+services:
+  # Backend API Service
+  - type: web
+    name: hcm-lite-backend
+    env: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: hcm-lite-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: AI_API_KEY
+        sync: false
+      - key: AI_MODEL
+        value: gemini-1.5-flash
+
+  # Frontend Static Application
+  - type: web
+    name: hcm-lite-frontend
+    env: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: https://hcm-lite-backend.onrender.com
+
+databases:
+  - name: hcm-lite-db
+    plan: free
